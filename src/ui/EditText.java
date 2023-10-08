@@ -13,6 +13,7 @@ public class EditText {
     private final CharHandler charHandler;
     private final CharHandler charHandlerVisi;
     public boolean isVisible = false;
+    public boolean error = false;
 
     private final Color colBg = Color.decode("#ae3d71");
 
@@ -23,6 +24,12 @@ public class EditText {
     }
 
     void draw(Graphics2D g) {
+
+        if (error){
+            g.setColor(Color.RED);
+            g.drawString("Password Incorrect..",12,154);
+        }
+
         g.setColor(colBg);
         g.fillRoundRect(rect.left, rect.top, rect.width(), rect.height(), 10, 10);
         g.setColor(Color.WHITE);
@@ -34,6 +41,10 @@ public class EditText {
 
         g.fillRect(x + (isVisible ? charHandlerVisi.width : charHandler.width) + 2, 164, 3, 20);
 
+    }
+
+    public String getPass(){
+        return charHandlerVisi.getText();
     }
 
     public void append(char c) {

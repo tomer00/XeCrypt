@@ -1,6 +1,7 @@
 package ui;
 
 import repo.Repo;
+import utils.HashingUtils;
 import utils.Rect;
 
 import javax.swing.ImageIcon;
@@ -25,10 +26,14 @@ public class LockView extends JComponent {
     private final Image eyeVisi, eyeHidden;
 
     private final Font font = new Font("ubuntu", Font.BOLD, 20);
+    private final boolean isFirst;
+    private final CloseCallback root;
 
-    public LockView() {
+    public LockView(boolean isFirst, CloseCallback callback) {
 
         //region ASSETS INIT
+        this.isFirst = isFirst;
+        this.root = callback;
 
         imgLogo = new ImageIcon(Repo.PATH + "xcryLogo.png").getImage();
         eyeHidden = new ImageIcon(Repo.PATH + "eyeHidden.png").getImage();
@@ -104,9 +109,10 @@ public class LockView extends JComponent {
                 if (e.getY() > 200) {
                     for (int i = 0; i < 12; i++) {
                         if (listButtonsRect[i].contains(e.getX(), e.getY())) {
-                            if (i < 10)
+                            if (i < 10) {
+                                if (et.error) et.error = false;
                                 et.append((char) ('0' + i));
-                            else if (i == 10) et.del();
+                            } else if (i == 10) et.del();
                             else nextScr();
                             repaint();
                             break;
@@ -135,11 +141,16 @@ public class LockView extends JComponent {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
                     et.del();
+                    if (et.error) et.error = false;
                     repaint();
                 } else if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9') || e.getKeyChar() == '.') {
                     et.append(e.getKeyChar());
+                    if (et.error) et.error = false;
                     repaint();
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) nextScr();
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    nextScr();
+                    repaint();
+                }
             }
 
             @Override
@@ -153,6 +164,19 @@ public class LockView extends JComponent {
     }
 
     private void nextScr() {
+        if (isFirst) {
+            Repo.saveHash(HashingUtils.get_SHA_1_SecurePassword(et.getPass()));
+            callNextActivity();
+            return;
+        }
+
+        if (Repo.getHash().contentEquals(HashingUtils.get_SHA_1_SecurePassword(et.getPass())))
+            callNextActivity();
+        else et.error = true;
+    }
+
+    private void callNextActivity() {
+        root.onClose();
     }
 
 
@@ -163,6 +187,10 @@ public class LockView extends JComponent {
         g.setRenderingHints(hints);
         g.drawImage(imgLogo, 50, 10, 120, 120, null);
         g.setFont(font);
+        if (isFirst) {
+            g.setColor(Color.RED);
+            g.drawString("Create a Password", 18, 154);
+        }
         et.draw(g);
 
         g.fillOval(rectEye.left, rectEye.top, rectEye.width(), rectEye.height());
@@ -181,5 +209,9 @@ public class LockView extends JComponent {
             g.drawImage(listImages[i], r.left, r.top, r.width(), r.height(), null);
         }
 
+    }
+
+    public interface CloseCallback {
+        void onClose();
     }
 }
