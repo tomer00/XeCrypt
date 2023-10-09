@@ -1,6 +1,6 @@
 package repo;
 
-import cipher.Cipher;
+import cipher.CipherUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -10,10 +10,11 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
 
 public class Repo {
     public static final String PATH = "/home/tom/test/xcrypt/";
@@ -22,6 +23,7 @@ public class Repo {
 
     //region STATIC BLOCK
 
+    private static String READIED_HASH;
 
     public static void saveHash(String pass) {
         File fHash = new File(PATH + "hash");
@@ -49,18 +51,19 @@ public class Repo {
     }
 
     public static String getHash() {
-        File fHash = new File(PATH + "hash");
-        try (var ins = new BufferedReader(new InputStreamReader(new FileInputStream(fHash)))) {
-            return ins.readLine();
-        } catch (Exception ignored) {
+        if (READIED_HASH == null) {
+            File fHash = new File(PATH + "hash");
+            try (var ins = new BufferedReader(new InputStreamReader(new FileInputStream(fHash)))) {
+                READIED_HASH = ins.readLine();
+            } catch (Exception ignored) {
+                READIED_HASH = "";
+            }
         }
-        return "";
+        return READIED_HASH;
     }
 
 
     //endregion STATIC BLOCK
-
-    private final String path;
 
     private BufferedImage getSquareCropped(String file) throws Exception {
         File inputFile = new File(file);
@@ -122,14 +125,65 @@ public class Repo {
         return f.getName().endsWith("png") || f.getName().endsWith("jpg");
     }
 
-    public Repo(RepoType type) {
-        if (type == RepoType.IMAGE) path = PATH + "images/";
-        else if (type == RepoType.VIDEO) path = PATH + "videos/";
-        else path = PATH + "others/";
+    //region FILE TYPE MAPPING
+
+
+    private static HashMap<String, String> mapTypes;
+
+    private static HashMap<String, String> getMapHash() {
+        if (mapTypes == null) {
+            mapTypes = new HashMap<>();
+
+            mapTypes.put("jpg", "images/");
+            mapTypes.put("jpeg", "images/");
+            mapTypes.put("png", "images/");
+            mapTypes.put("webp", "images/");
+            mapTypes.put("gif", "images/");
+            mapTypes.put("svg", "images/");
+            mapTypes.put("bmp", "images/");
+            mapTypes.put("ico", "images/");
+            mapTypes.put("tif", "images/");
+            mapTypes.put("psd", "images/");
+
+            mapTypes.put("mp4", "videos/");
+            mapTypes.put("mkv", "videos/");
+            mapTypes.put("mov", "videos/");
+            mapTypes.put("wmv", "videos/");
+            mapTypes.put("flv", "videos/");
+            mapTypes.put("avi", "videos/");
+            mapTypes.put("webm", "videos/");
+
+        }
+        return mapTypes;
     }
 
-    public List<String> getAll() {
-        File folder = new File(path);
+    //endregion FILE TYPE MAPPING
+
+    private String subDir(String ext) {
+        return getMapHash().getOrDefault(ext, "others/");
+    }
+
+    private String getExt(String name) {
+        int index = name.lastIndexOf('.');
+        if (index > -1)
+            return name.substring(index + 1);
+        return "";
+    }
+
+    public void decFile(File f) {
+        File out = new File(PATH, "cache");
+        if (!out.exists())
+            out.mkdirs();
+
+        File inpFile = new File(f,ENC_NAME);
+        out = new File(out,f.getName());
+
+        CipherUtils.decFile(inpFile,out);
+
+    }
+
+    public List<String> getAll(String path) {
+        File folder = new File(PATH, path);
         var t = folder.list();
         if (t != null)
             return Arrays.stream(t).toList();
@@ -137,6 +191,7 @@ public class Repo {
     }
 
     public boolean saveFile(File f) {
+        var path = PATH + subDir(getExt(f.getName()));
         var name = getRandom();
         File folEnc = new File(path + name);
         folEnc.mkdirs();
@@ -146,19 +201,22 @@ public class Repo {
         if (path.contains("images") && canThumb(f)) {
             getThumbPath(f.getAbsolutePath());
 
-            Cipher.encFile(f, fileEnc);
-            Cipher.encFile(new File(PATH, "thumb"), fileThumb);
+            File thumb = new File(PATH, "thumb");
+            CipherUtils.encFile(f, fileEnc);
+            CipherUtils.encFile(thumb, fileThumb);
+            thumb.deleteOnExit();
             return true;
 
         } else {
-            Cipher.encFile(f, fileEnc);
+            CipherUtils.encFile(f, fileEnc);
             return false;
         }
     }
 
     public BufferedImage getThumb(File file) {
         File f = new File(PATH, "decThumb");
-        Cipher.decFile(file, f);
+        CipherUtils.decFile(file, f);
+        f.deleteOnExit();
         try {
             return ImageIO.read(f);
         } catch (Exception ignored) {
