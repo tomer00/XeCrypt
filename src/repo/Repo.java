@@ -92,7 +92,6 @@ public class Repo {
         int thumbnailHeight = 160;
 
         try {
-            // Read the input image
 
             BufferedImage inputImage = getSquareCropped(imgFile);
 
