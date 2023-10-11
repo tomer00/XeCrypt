@@ -10,16 +10,13 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
+import java.util.*;
 
 public class Repo {
     public static final String PATH = "/home/tom/test/xcrypt/";
     public static final String ENC_NAME = "dHF0pywK8FvtBOQ27RoezfsXuKRhaybM";
     public static final String THUMB_NAME = "YrjmD2Dt97ambqy4GUeStRgy3AODGCPp";
+    public static final String META_NAME = "StRgy3AODGCPp2Dt97ambqy4GUeYrjmD";
 
     //region STATIC BLOCK
 
@@ -174,10 +171,10 @@ public class Repo {
         if (!out.exists())
             out.mkdirs();
 
-        File inpFile = new File(f,ENC_NAME);
-        out = new File(out,f.getName());
+        File inpFile = new File(f, ENC_NAME);
+        out = new File(out, f.getName());
 
-        CipherUtils.decFile(inpFile,out);
+        CipherUtils.decFile(inpFile, out);
 
     }
 
@@ -189,7 +186,7 @@ public class Repo {
         return new ArrayList<>();
     }
 
-    public boolean saveFile(File f) {
+    public void saveFile(File f) {
         var path = PATH + subDir(getExt(f.getName()));
         var name = getRandom();
         File folEnc = new File(path + name);
@@ -197,6 +194,12 @@ public class Repo {
 
         var fileEnc = new File(folEnc, ENC_NAME);
         var fileThumb = new File(folEnc, THUMB_NAME);
+        var fileMeta = new File(folEnc, META_NAME);
+        try (var out = new FileOutputStream(fileMeta)) {
+            out.write(CipherUtils.encrypt(f.getName()).getBytes(StandardCharsets.UTF_8));
+            out.flush();
+        } catch (IOException ignored) {
+        }
         if (path.contains("images") && canThumb(f)) {
             getThumbPath(f.getAbsolutePath());
 
@@ -204,11 +207,9 @@ public class Repo {
             CipherUtils.encFile(f, fileEnc);
             CipherUtils.encFile(thumb, fileThumb);
             thumb.deleteOnExit();
-            return true;
 
         } else {
             CipherUtils.encFile(f, fileEnc);
-            return false;
         }
     }
 

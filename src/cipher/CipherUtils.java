@@ -11,8 +11,43 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class CipherUtils {
+
+    public static String encrypt(String msg) {
+        try {
+            SecretKeySpec skeySpec = new SecretKeySpec(Repo.getHash().substring(0, 32).getBytes(StandardCharsets.UTF_8), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+
+            byte[] encrypted = cipher.doFinal(msg.getBytes());
+            return Base64.getEncoder().encodeToString(encrypted);
+
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
+    }
+
+    public static String decrypt(String msg) {
+        try {
+
+            byte[] values = Base64.getDecoder().decode(msg);
+            SecretKeySpec skeySpec = new SecretKeySpec(Repo.getHash().substring(0, 32).getBytes(StandardCharsets.UTF_8), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+
+
+            return new String(cipher.doFinal(values));
+
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
+    }
 
     public static void encFile(File inpFile, File outFile) {
         try (var in = new FileInputStream(inpFile)) {
