@@ -85,8 +85,8 @@ public class Repo {
 
     private void getThumbPath(String imgFile) {
         // Desired thumbnail dimensions
-        int thumbnailWidth = 160;
-        int thumbnailHeight = 160;
+        int thumbnailWidth = 100;
+        int thumbnailHeight = 100;
 
         try {
 

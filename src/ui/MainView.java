@@ -11,7 +11,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainView extends JComponent {
 
@@ -31,6 +33,9 @@ public class MainView extends JComponent {
 
     private boolean isDragIn = false;
 
+    private final Font fontSide = new Font("Uroob", Font.BOLD, 30);
+    private final Font fontMain = new Font("System", Font.PLAIN, 16);
+
     public MainView() {
         hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -42,11 +47,9 @@ public class MainView extends JComponent {
 
         sideButtons[0].isSelected = true;
 
-        setFont(new Font("Uroob", Font.BOLD, 30));
+        rvComponent = new RvComponent((pos, type) -> {
 
-        rvComponent = new RvComponent((pos,type) -> {
-
-        });
+        }, getFontMetrics(fontMain));
 
         //region MOUSE LISTENERS
 
@@ -110,12 +113,17 @@ public class MainView extends JComponent {
 
         //endregion MOUSE LISTENERS
 
+
+        var files = Arrays.stream(new File(Repo.PATH + "images").listFiles()).collect(Collectors.toList());
+        rvComponent.updateRv(files);
+
     }
 
     @Override
     public void paint(Graphics _g) {
         Graphics2D g = (Graphics2D) _g.create();
 
+        g.setFont(fontSide);
         if (prevW != getWidth() || prevH != getHeight()) {
             rectSide.set(new Rect(0, 0, 160, getHeight()));
             rectMain.set(new Rect(160, 0, getWidth(), getHeight()));
@@ -139,7 +147,7 @@ public class MainView extends JComponent {
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(rectSide.left, rectSide.top, rectSide.width(), rectSide.height());
 
-        g.setColor(Color.YELLOW);
+        g.setColor(new Color(239, 234, 234));
         g.fillRect(rectMain.left, rectMain.top, rectMain.width(), rectMain.height());
 
 
@@ -174,7 +182,11 @@ public class MainView extends JComponent {
 
         //endregion SIDE PANEL
 
+        g.setFont(fontMain);
+
         rvComponent.draw(g);
+
+        g.setFont(fontSide);
 
         if (!isDragIn) return;
         g.setColor(new Color(157, 152, 152, 180));
@@ -183,7 +195,7 @@ public class MainView extends JComponent {
         int y = (rectMain.height() - 380) >> 1;
         g.drawImage(imgDrop, ((rectMain.width() - 288) >> 1) + 160, y, null);
         g.setColor(Color.BLACK);
-        g.drawString("Drop Files to Encrypt", ((rectMain.width() - getFontMetrics(getFont()).stringWidth("Drop Files to Encrypt")) >> 1) + 160, y + 300);
+        g.drawString("Drop Files to Encrypt", ((rectMain.width() - getFontMetrics(fontSide).stringWidth("Drop Files to Encrypt")) >> 1) + 160, y + 300);
 
     }
 
