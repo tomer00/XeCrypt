@@ -20,9 +20,11 @@ public class RvComponent {
     private final Repo repo = new Repo();
     private FontMetrics fm;
 
+    private int off = 10, col = 5;
+
     private final Image videoIcon, imageIcon, othersIcon;
 
-    public RvComponent(OnRVClickLis lis,FontMetrics fm) {
+    public RvComponent(OnRVClickLis lis, FontMetrics fm) {
         this.lis = lis;
         videoIcon = new ImageIcon(Repo.PATH + "video.png").getImage();
         imageIcon = new ImageIcon(Repo.PATH + "image.png").getImage();
@@ -52,10 +54,33 @@ public class RvComponent {
     }
 
     public void updateRv(List<File> files) {
+        elements.clear();
+        int i = 0, j = 0;
         for (var f : files) {
-            elements.add(new RvElement(videoIcon, "HII texst jfvbsdjbsdbsbvjsdhjdfs", new Rect(0, 0, 120, 180), fm));
+            if (i == col) {
+                i = 0;
+                j++;
+            }
+            Image icon = repo.getThumb(f);
+            if (icon == null) {
+                var s = Repo.getMapHash().getOrDefault(Repo.getExt(f.getName()), "other");
+                if (s.equals("images/")) icon = imageIcon;
+                else if (s.equals("videos/")) {
+                    icon = videoIcon;
+                } else icon = othersIcon;
+            }
+            int x = off + (i * 130);
+            int y = j * 190;
+            elements.add(new RvElement(icon, f.getName(), new Rect(x, y, x + 120, y + 180), fm));
+            i++;
         }
     }
+
+    public void setOffAndColumns(int off, int col) {
+        this.off = off;
+        this.col = col;
+    }
+
 
     public interface OnRVClickLis {
         void onclick(int pos, int type);

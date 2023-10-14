@@ -31,10 +31,12 @@ public class RvElement {
         }
         g.drawImage(icon, state.rect.left + 10, state.rect.top + 10, null);
         g.setColor(Color.BLACK);
-        g.drawString(text, stringX, 132);
+        g.drawString(text, state.rect.left+stringX, state.rect.top+132);
 
         g.setColor(Color.CYAN);
         g.fillRoundRect(state.rect.left + 10, state.rect.top + 138, 100, 32, 32, 32);
+        g.setColor(Color.BLACK);
+        g.drawString("Decypt",state.rect.left+32, state.rect.top+158);
     }
 
     private int findStr(String str, FontMetrics fm) {

@@ -126,7 +126,7 @@ public class Repo {
 
     private static HashMap<String, String> mapTypes;
 
-    private static HashMap<String, String> getMapHash() {
+    public static HashMap<String, String> getMapHash() {
         if (mapTypes == null) {
             mapTypes = new HashMap<>();
 
@@ -159,7 +159,7 @@ public class Repo {
         return getMapHash().getOrDefault(ext, "others/");
     }
 
-    private String getExt(String name) {
+    public static String getExt(String name) {
         int index = name.lastIndexOf('.');
         if (index > -1)
             return name.substring(index + 1);

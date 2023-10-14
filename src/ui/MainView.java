@@ -139,6 +139,15 @@ public class MainView extends JComponent {
 
             prevH = getHeight();
             prevW = getWidth();
+
+            int w = getWidth() - 160;
+
+            int col =( getWidth()-60) / 130;
+            col--;
+            int off = (w - ((col * 130) -10)) >> 1;
+
+            rvComponent.setOffAndColumns(off, col);
+            rvComponent.updateRv(Arrays.stream(new File(Repo.PATH + "images").listFiles()).collect(Collectors.toList()));
         }
 
         g.setRenderingHints(hints);
