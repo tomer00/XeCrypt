@@ -5,14 +5,17 @@ import utils.Rect;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.text.html.ImageView;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MainView extends JComponent {
@@ -36,6 +39,9 @@ public class MainView extends JComponent {
     private final Font fontSide = new Font("Uroob", Font.BOLD, 30);
     private final Font fontMain = new Font("System", Font.PLAIN, 16);
 
+    private final List<File> files = new ArrayList<>();
+    private int fileType = 0;
+
     public MainView() {
         hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -47,8 +53,18 @@ public class MainView extends JComponent {
 
         sideButtons[0].isSelected = true;
 
-        rvComponent = new RvComponent((pos, type) -> {
+        rvComponent = new RvComponent(this, rectMain, (pos, type) -> {
+            var f = files.get(pos);
+            if (type == 2) {
+                System.out.println(files.get(pos).getAbsolutePath());
+                for (File subfile : Objects.requireNonNull(f.listFiles())) subfile.delete();
+                f.delete();
+                updateRv();
+            } else if (type == 1) {
 
+            } else {
+                new ActiImg(f);
+            }
         }, getFontMetrics(fontMain));
 
         //region MOUSE LISTENERS
@@ -65,11 +81,13 @@ public class MainView extends JComponent {
                 if (rectMain.contains(x, y)) {
                     rvComponent.onMouseClick(x, y);
                 } else if (rectSide.contains(x, y)) {
-                    for (var sb : sideButtons) {
+                    for (int i = 0; i < 3; i++) {
+                        var sb = sideButtons[i];
                         if (sb.rect.contains(x, y)) {
                             for (var sb2 : sideButtons) sb2.isSelected = false;
                             sb.isSelected = true;
-                            repaint();
+                            fileType = i;
+                            updateRv();
                             return;
                         }
                     }
@@ -81,7 +99,10 @@ public class MainView extends JComponent {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 super.mouseWheelMoved(e);
-                if (rectMain.contains(e.getX(), e.getY())) rvComponent.onMouseWheel(e.getWheelRotation() == -1);
+                if (rectMain.contains(e.getX(), e.getY())) {
+                    rvComponent.onMouseWheel(e.getWheelRotation() == -1);
+                    repaint();
+                }
             }
         });
 
@@ -112,11 +133,24 @@ public class MainView extends JComponent {
         });
 
         //endregion MOUSE LISTENERS
+        updateRv();
 
+    }
 
-        var files = Arrays.stream(new File(Repo.PATH + "images").listFiles()).collect(Collectors.toList());
+    private void updateRv() {
+        var path = "others";
+        if (fileType == 0) path = "images";
+        else if (fileType == 1) path = "videos";
+        var fol = new File(Repo.PATH + path);
+        if (!fol.exists()) {
+            repaint();
+            return;
+        }
+        var files = Arrays.stream(fol.listFiles()).collect(Collectors.toList());
+        this.files.clear();
+        this.files.addAll(files);
         rvComponent.updateRv(files);
-
+        repaint();
     }
 
     @Override
@@ -142,12 +176,16 @@ public class MainView extends JComponent {
 
             int w = getWidth() - 160;
 
-            int col =( getWidth()-60) / 130;
+            int col = (getWidth() - 60) / 130;
             col--;
-            int off = (w - ((col * 130) -10)) >> 1;
+            int off = (w - ((col * 130) - 10)) >> 1;
+            if (col < 1) {
+                col = 1;
+                off = 4;
+            }
 
             rvComponent.setOffAndColumns(off, col);
-            rvComponent.updateRv(Arrays.stream(new File(Repo.PATH + "images").listFiles()).collect(Collectors.toList()));
+            updateRv();
         }
 
         g.setRenderingHints(hints);

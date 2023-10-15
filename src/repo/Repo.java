@@ -186,6 +186,15 @@ public class Repo {
         return new ArrayList<>();
     }
 
+    public String getName(File fol) {
+        File f = new File(fol, META_NAME);
+        try (var b = new BufferedReader(new InputStreamReader(new FileInputStream(f)))) {
+            return CipherUtils.decrypt(b.readLine());
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     public void saveFile(File f) {
         var path = PATH + subDir(getExt(f.getName()));
         var name = getRandom();
@@ -214,8 +223,10 @@ public class Repo {
     }
 
     public BufferedImage getThumb(File file) {
+        File fileThumb = new File(file, THUMB_NAME);
+        if (!fileThumb.exists()) return null;
         File f = new File(PATH, "decThumb");
-        CipherUtils.decFile(file, f);
+        CipherUtils.decFile(fileThumb, f);
         f.deleteOnExit();
         try {
             return ImageIO.read(f);
