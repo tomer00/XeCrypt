@@ -10,7 +10,8 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Random;
 
 public class Repo {
     public static final String PATH = "/home/tom/test/xcrypt/";
@@ -166,24 +167,18 @@ public class Repo {
         return "";
     }
 
-    public void decFile(File f) {
-        File out = new File(PATH, "cache");
-        if (!out.exists())
-            out.mkdirs();
-
+    public void decFile(File f, boolean isTemp) {
         File inpFile = new File(f, ENC_NAME);
-        out = new File(out, f.getName());
+        File out = new File(PATH, ".cache");
+        if (!out.exists()) {
+            out.mkdirs();
+        }
+        out = new File(out, getName(f));
 
+
+        if (isTemp)
+            out = new File(PATH, "lastCache");
         CipherUtils.decFile(inpFile, out);
-
-    }
-
-    public List<String> getAll(String path) {
-        File folder = new File(PATH, path);
-        var t = folder.list();
-        if (t != null)
-            return Arrays.stream(t).toList();
-        return new ArrayList<>();
     }
 
     public String getName(File fol) {
@@ -225,9 +220,19 @@ public class Repo {
     public BufferedImage getThumb(File file) {
         File fileThumb = new File(file, THUMB_NAME);
         if (!fileThumb.exists()) return null;
-        File f = new File(PATH, "decThumb");
+
+        File cachedThumb = new File(PATH + ".thumbs", file.getName());
+
+        if (cachedThumb.exists()) {
+            try {
+                return ImageIO.read(cachedThumb);
+            } catch (Exception ignored) {
+            }
+        }
+
+        File f = new File(PATH + ".thumbs", file.getName());
+        f.getParentFile().mkdirs();
         CipherUtils.decFile(fileThumb, f);
-        f.deleteOnExit();
         try {
             return ImageIO.read(f);
         } catch (Exception ignored) {

@@ -19,7 +19,7 @@ public class MainScreen extends JFrame {
         this.add(root);
         root.setOpaque(false);
         root.setLayout(new GridLayout(1, 1));
-        mainView = new MainView();
+        mainView = new MainView(repo);
         root.add(mainView);
 
         DropTarget dropTarget = new DropTarget() {

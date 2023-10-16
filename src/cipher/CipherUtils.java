@@ -98,6 +98,8 @@ public class CipherUtils {
             while ((count = in.read(buffer)) > 0) {
                 out.write(buffer, 0, count);
             }
+            out.flush();
+            out.close();
         } catch (Exception ignored) {
         }
     }

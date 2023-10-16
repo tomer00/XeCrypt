@@ -42,7 +42,7 @@ public class MainView extends JComponent {
     private final List<File> files = new ArrayList<>();
     private int fileType = 0;
 
-    public MainView() {
+    public MainView(Repo repo) {
         hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         hints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
@@ -56,14 +56,16 @@ public class MainView extends JComponent {
         rvComponent = new RvComponent(this, rectMain, (pos, type) -> {
             var f = files.get(pos);
             if (type == 2) {
-                System.out.println(files.get(pos).getAbsolutePath());
                 for (File subfile : Objects.requireNonNull(f.listFiles())) subfile.delete();
                 f.delete();
                 updateRv();
             } else if (type == 1) {
-
-            } else {
-                new ActiImg(f);
+                repo.decFile(f,false);
+                //todo some kind of dialog
+            } else{
+                repo.decFile(f,true);
+                new ActiImg(repo.getName(f));
+                f.deleteOnExit();
             }
         }, getFontMetrics(fontMain));
 
