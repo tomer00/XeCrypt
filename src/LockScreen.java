@@ -22,8 +22,8 @@ public class LockScreen extends JFrame {
 
             var first = new MainScreen();
             first.setSize(660, 400);
-            first.setTitle("xCrypt by Himu...");
-            first.setIconImage(new ImageIcon(Repo.PATH + "xcryLogo.png").getImage());
+            first.setTitle("xCrypt by Tomer...");
+            first.setIconImage(new ImageIcon(Repo.ASSETS + "xcryLogo.png").getImage());
             first.setVisible(true);
             first.setLocationRelativeTo(null);
             first.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

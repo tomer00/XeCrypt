@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="XeCrypt:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/XeCrypt_jar</output-path>
+    <root id="archive" name="XeCrypt.jar">
+      <element id="module-output" name="XeCrypt" />
+    </root>
+  </artifact>
+</component>

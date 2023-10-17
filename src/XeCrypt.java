@@ -1,4 +1,3 @@
-import cipher.CipherUtils;
 import repo.Repo;
 
 import javax.swing.ImageIcon;
@@ -6,25 +5,25 @@ import javax.swing.JFrame;
 
 public class XeCrypt {
     public static void main(String[] args) {
-//        LockScreen first = new LockScreen(isFirst());
-//        first.setSize(220, 400);
-//        first.setTitle("xCrypt by Himu...");
-//        first.setIconImage(new ImageIcon(Repo.PATH + "xcryLogo.png").getImage());
-//        first.setVisible(true);
-//        first.setResizable(false);
-//        first.setLocationRelativeTo(null);
-//        first.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        var first = new MainScreen();
-        first.setSize(660, 400);
+        //checking if it is a Jar File
+        if (!XeCrypt.class.getProtectionDomain().getCodeSource().getLocation().getPath().endsWith("jar")) {
+            Repo.ASSETS = XeCrypt.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            Repo.ASSETS += "xcrypt/";
+
+
+            Repo.PATH_X = XeCrypt.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            Repo.PATH_X += "xcry/";
+        }
+
+        LockScreen first = new LockScreen(Repo.getHash().isEmpty());
+        first.setSize(220, 400);
         first.setTitle("xCrypt by Himu...");
-        first.setIconImage(new ImageIcon(Repo.PATH + "xcryLogo.png").getImage());
+        first.setIconImage(new ImageIcon(Repo.ASSETS + "xcryLogo.png").getImage());
         first.setVisible(true);
+        first.setResizable(false);
         first.setLocationRelativeTo(null);
         first.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    }
 
-    private static boolean isFirst() {
-        return Repo.getHash().isEmpty();
     }
 }

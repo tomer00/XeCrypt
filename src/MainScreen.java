@@ -52,10 +52,9 @@ public class MainScreen extends JFrame {
     private void encFiles(List<File> drFiles) {
         mainView.encrypting(drFiles);
         new Thread(() -> {
-            for (var f : drFiles) {
+            for (var f : drFiles)
                 repo.saveFile(f);
-                System.out.println("Encrypting " + f.getAbsoluteFile());
-            }
+            mainView.encrypted(drFiles);
         }).start();
     }
 }

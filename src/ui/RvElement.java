@@ -15,7 +15,7 @@ public class RvElement {
     private final Color lightBg = Color.decode("#dcdee0");
     private final Color darkBg = Color.decode("#9399a3");
 
-    public final Rect decRec,delRect;
+    public final Rect decRec, delRect;
 
     public RvElement(Image img, String text, Rect rect, FontMetrics fm) {
         icon = img;
@@ -24,8 +24,8 @@ public class RvElement {
         text = text.substring(0, ind);
         stringX = ((100 - fm.stringWidth(text)) >> 1) + 10;
         this.text = text;
-        decRec = new Rect(rect.left + 10, rect.top + 138,rect.left + 110, rect.top + 170);
-        delRect = new Rect(state.rect.left + 78, state.rect.top + 140,state.rect.left + 100, state.rect.top + 168);
+        decRec = new Rect(rect.left + 10, rect.top + 138, rect.left + 110, rect.top + 170);
+        delRect = new Rect(state.rect.left + 78, state.rect.top + 140, state.rect.left + 100, state.rect.top + 168);
     }
 
     public void draw(Graphics2D g) {
@@ -42,7 +42,7 @@ public class RvElement {
         g.setColor(Color.CYAN);
         g.fillRoundRect(state.rect.left + 10, state.rect.top + 138, 100, 32, 32, 32);
         g.setColor(Color.BLACK);
-        g.drawString("Decypt", state.rect.left + 20, state.rect.top + 158);
+        g.drawString("Decrypt", state.rect.left + 16, state.rect.top + 160);
 
         g.setColor(Color.red);
         g.fillOval(state.rect.left + 78, state.rect.top + 140, 28, 28);

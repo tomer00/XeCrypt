@@ -3,8 +3,10 @@ package repo;
 import cipher.CipherUtils;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
@@ -14,7 +16,8 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Repo {
-    public static final String PATH = "/home/tom/test/xcrypt/";
+    public static String ASSETS = "xcrypt/";
+    public static String PATH_X = "xcry/";
     public static final String ENC_NAME = "dHF0pywK8FvtBOQ27RoezfsXuKRhaybM";
     public static final String THUMB_NAME = "YrjmD2Dt97ambqy4GUeStRgy3AODGCPp";
     public static final String META_NAME = "StRgy3AODGCPp2Dt97ambqy4GUeYrjmD";
@@ -24,7 +27,7 @@ public class Repo {
     private static String READIED_HASH;
 
     public static void saveHash(String pass) {
-        File fHash = new File(PATH + "hash");
+        File fHash = new File(ASSETS + "hash");
         try (var ois = new FileOutputStream(fHash)) {
             ois.write(pass.getBytes(StandardCharsets.UTF_8));
             ois.flush();
@@ -50,7 +53,7 @@ public class Repo {
 
     public static String getHash() {
         if (READIED_HASH == null) {
-            File fHash = new File(PATH + "hash");
+            File fHash = new File(ASSETS + "hash");
             try (var ins = new BufferedReader(new InputStreamReader(new FileInputStream(fHash)))) {
                 READIED_HASH = ins.readLine();
             } catch (Exception ignored) {
@@ -99,6 +102,7 @@ public class Repo {
             RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(0, 0, thumbnailWidth, thumbnailHeight, 20, 20);
 
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
             // Set the clip of the Graphics2D context to the round rectangle
             g2d.setClip(roundedRectangle);
@@ -110,7 +114,7 @@ public class Repo {
             g2d.dispose();
 
             // Save the thumbnail to the output file
-            File outputFile = new File(PATH, "thumb");
+            File outputFile = new File(ASSETS, "thumb");
             ImageIO.write(thumbnail, "png", outputFile);
 
         } catch (Exception ignored) {
@@ -169,7 +173,7 @@ public class Repo {
 
     public void decFile(File f, boolean isTemp) {
         File inpFile = new File(f, ENC_NAME);
-        File out = new File(PATH, ".cache");
+        File out = new File(PATH_X, ".cache");
         if (!out.exists()) {
             out.mkdirs();
         }
@@ -177,7 +181,7 @@ public class Repo {
 
 
         if (isTemp)
-            out = new File(PATH, "lastCache");
+            out = new File(ASSETS, "lastCache");
         CipherUtils.decFile(inpFile, out);
     }
 
@@ -191,7 +195,7 @@ public class Repo {
     }
 
     public void saveFile(File f) {
-        var path = PATH + subDir(getExt(f.getName()));
+        var path = PATH_X + subDir(getExt(f.getName()));
         var name = getRandom();
         File folEnc = new File(path + name);
         folEnc.mkdirs();
@@ -207,7 +211,7 @@ public class Repo {
         if (path.contains("images") && canThumb(f)) {
             getThumbPath(f.getAbsolutePath());
 
-            File thumb = new File(PATH, "thumb");
+            File thumb = new File(ASSETS, "thumb");
             CipherUtils.encFile(f, fileEnc);
             CipherUtils.encFile(thumb, fileThumb);
             thumb.deleteOnExit();
@@ -217,20 +221,16 @@ public class Repo {
         }
     }
 
-    public BufferedImage getThumb(File file) {
+    public Image getThumb(File file) {
         File fileThumb = new File(file, THUMB_NAME);
         if (!fileThumb.exists()) return null;
 
-        File cachedThumb = new File(PATH + ".thumbs", file.getName());
+        File cachedThumb = new File(PATH_X + ".thumbs", file.getName());
 
-        if (cachedThumb.exists()) {
-            try {
-                return ImageIO.read(cachedThumb);
-            } catch (Exception ignored) {
-            }
-        }
+        if (cachedThumb.exists())
+            return new ImageIcon(cachedThumb.getAbsolutePath()).getImage();
 
-        File f = new File(PATH + ".thumbs", file.getName());
+        File f = new File(PATH_X + ".thumbs", file.getName());
         f.getParentFile().mkdirs();
         CipherUtils.decFile(fileThumb, f);
         try {

@@ -24,18 +24,18 @@ public class RvComponent {
     private final Rect rect;
 
     private final Image videoIcon, imageIcon, othersIcon;
-    private final MainView mv;
+    private final MainView parent;
     private int lastHovered = 0;
 
 
     public RvComponent(MainView parent, Rect rect, OnRVClickLis lis, FontMetrics fm) {
         this.lis = lis;
-        videoIcon = new ImageIcon(Repo.PATH + "video.png").getImage();
-        imageIcon = new ImageIcon(Repo.PATH + "image.png").getImage();
-        othersIcon = new ImageIcon(Repo.PATH + "others.png").getImage();
+        videoIcon = new ImageIcon(Repo.ASSETS + "video.png").getImage();
+        imageIcon = new ImageIcon(Repo.ASSETS + "image.png").getImage();
+        othersIcon = new ImageIcon(Repo.ASSETS + "others.png").getImage();
         this.fm = fm;
         this.rect = rect;
-        mv = parent;
+        this.parent = parent;
     }
 
 
@@ -53,7 +53,8 @@ public class RvComponent {
         for (int i = 0; i < n; i++) {
             if (elements.get(i).state.rect.contains(x - 160, y - scrollOffset)) {
                 if (i == lastHovered) return;
-                if (lastHovered != -1) elements.get(lastHovered).state.isHoverd = false;
+                if (lastHovered != -1 && lastHovered != elements.size())
+                    elements.get(lastHovered).state.isHoverd = false;
                 elements.get(i).state.isHoverd = true;
                 lastHovered = i;
                 isAny = true;
@@ -61,11 +62,11 @@ public class RvComponent {
             }
         }
         if (isAny) {
-            mv.repaint();
+            parent.repaint();
         } else {
             if (lastHovered != -1) {
                 elements.forEach((e) -> e.state.isHoverd = false);
-                mv.repaint();
+                parent.repaint();
                 lastHovered = -1;
             }
         }
@@ -79,7 +80,7 @@ public class RvComponent {
                 if (e.delRect.contains(x - 160, y - scrollOffset)) lis.onclick(i, 2);
                 else if (e.decRec.contains(x - 160, y - scrollOffset)) lis.onclick(i, 1);
                 else {
-                    if (elements.get(i).icon == imageIcon || elements.get(i).icon == videoIcon || elements.get(i).icon == othersIcon)
+                    if (e.icon == imageIcon || e.icon == videoIcon || e.icon == othersIcon)
                         return;
                     lis.onclick(i, 0);
                 }
@@ -91,10 +92,10 @@ public class RvComponent {
     public void onMouseWheel(boolean isUp) {
         if (yMax < rect.height()) return;
         if (!isUp) {
-            scrollOffset -= 20;
-            if (-scrollOffset > yMax - rect.height()) scrollOffset = -(yMax - rect.height() + 10);
+            scrollOffset -= 32;
+            if (-scrollOffset > yMax - rect.height()) scrollOffset = rect.height() - yMax - 10;
         } else {
-            scrollOffset += 20;
+            scrollOffset += 32;
             if (scrollOffset > 10) scrollOffset = 10;
         }
     }

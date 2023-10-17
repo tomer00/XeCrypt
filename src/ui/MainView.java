@@ -5,13 +5,13 @@ import utils.Rect;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.text.html.ImageView;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 public class MainView extends JComponent {
 
-    private final Image imgLogo = new ImageIcon(Repo.PATH + "xcryLogo.png").getImage();
-    private final Image imgDrop = new ImageIcon(Repo.PATH + "drop.png").getImage();
+    private final Image imgLogo = new ImageIcon(Repo.ASSETS + "xcryLogo.png").getImage();
+    private final Image imgDrop = new ImageIcon(Repo.ASSETS + "drop.png").getImage();
     private final RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     private final Rect rectSide = new Rect(0, 0, 0, 0);
@@ -60,10 +60,17 @@ public class MainView extends JComponent {
                 f.delete();
                 updateRv();
             } else if (type == 1) {
-                repo.decFile(f,false);
-                //todo some kind of dialog
-            } else{
-                repo.decFile(f,true);
+                new Thread(() -> {
+                    var l = new ArrayList<File>(1);
+                    l.add(f);
+                    enc = new EncDecActi(false, l);
+                    enc.setLocationRelativeTo(this);
+                    repo.decFile(f, false);
+                    enc.done();
+                }).start();
+
+            } else {
+                repo.decFile(f, true);
                 new ActiImg(repo.getName(f));
                 f.deleteOnExit();
             }
@@ -83,6 +90,17 @@ public class MainView extends JComponent {
                 if (rectMain.contains(x, y)) {
                     rvComponent.onMouseClick(x, y);
                 } else if (rectSide.contains(x, y)) {
+                    //handling logo click
+                    if (x > 30 && x < 130 && y > 20 && y < 120) {
+                        Desktop ds = Desktop.getDesktop();
+                        try {
+                            File f = new File(Repo.PATH_X + ".cache");
+                            f.mkdirs();
+                            ds.open(f);
+                        } catch (IOException ignored) {
+                        }
+                        return;
+                    }
                     for (int i = 0; i < 3; i++) {
                         var sb = sideButtons[i];
                         if (sb.rect.contains(x, y)) {
@@ -143,8 +161,10 @@ public class MainView extends JComponent {
         var path = "others";
         if (fileType == 0) path = "images";
         else if (fileType == 1) path = "videos";
-        var fol = new File(Repo.PATH + path);
+        var fol = new File(Repo.PATH_X + path);
         if (!fol.exists()) {
+            this.files.clear();
+            rvComponent.updateRv(files);
             repaint();
             return;
         }
@@ -255,8 +275,16 @@ public class MainView extends JComponent {
         repaint();
     }
 
-    public void encrypting(List<File> files) {
+    public void encrypted(List<File> files) {
+        updateRv();
+        enc.done();
+    }
 
+    private EncDecActi enc;
+
+    public void encrypting(List<File> files) {
+        enc = new EncDecActi(true, files);
+        enc.setLocationRelativeTo(this);
     }
     //endregion COMMUNICATION
 

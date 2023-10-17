@@ -35,19 +35,19 @@ public class LockView extends JComponent {
         this.isFirst = isFirst;
         this.root = callback;
 
-        imgLogo = new ImageIcon(Repo.PATH + "xcryLogo.png").getImage();
-        eyeHidden = new ImageIcon(Repo.PATH + "eyeHidden.png").getImage();
-        eyeVisi = new ImageIcon(Repo.PATH + "eyeVisi.png").getImage();
+        imgLogo = new ImageIcon(Repo.ASSETS + "xcryLogo.png").getImage();
+        eyeHidden = new ImageIcon(Repo.ASSETS + "eyeHidden.png").getImage();
+        eyeVisi = new ImageIcon(Repo.ASSETS + "eyeVisi.png").getImage();
         et = new EditText(new Rect(20, 160, 200, 190), getFontMetrics(font));
         for (int i = 0; i < 10; i++) {
             listIsHovered[i] = false;
-            listImages[i] = new ImageIcon(Repo.PATH + i + ".png").getImage();
+            listImages[i] = new ImageIcon(Repo.ASSETS + i + ".png").getImage();
         }
         listIsHovered[10] = false;
         listIsHovered[11] = false;
 
-        listImages[10] = new ImageIcon(Repo.PATH + "back.png").getImage();
-        listImages[11] = new ImageIcon(Repo.PATH + "next.png").getImage();
+        listImages[10] = new ImageIcon(Repo.ASSETS + "back.png").getImage();
+        listImages[11] = new ImageIcon(Repo.ASSETS + "next.png").getImage();
 
         listButtonsRect[1] = new Rect(10, 200, 70, 240);
         listButtonsRect[2] = new Rect(80, 200, 140, 240);

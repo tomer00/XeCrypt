@@ -25,9 +25,9 @@ public class EditText {
 
     void draw(Graphics2D g) {
 
-        if (error){
+        if (error) {
             g.setColor(Color.RED);
-            g.drawString("Password Incorrect..",12,154);
+            g.drawString("Password Incorrect..", 12, 154);
         }
 
         g.setColor(colBg);
@@ -43,7 +43,7 @@ public class EditText {
 
     }
 
-    public String getPass(){
+    public String getPass() {
         return charHandlerVisi.getText();
     }
 
