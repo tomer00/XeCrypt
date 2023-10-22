@@ -10,12 +10,37 @@ XeCrypt is a versatile Java Swing application that empowers you to encrypt and d
 
 ## Table of Contents 📄
 
+- [Screenshots](#screenshots-)
 - [Features](#features-)
 - [Getting Started](#getting-started-)
-   - [Installation](#installation)
+  - [Installation](#installation)
 - [Usage](#usage-)
 - [Security](#security-)
 - [License](#license-)
+
+---
+
+## ScreenShots 🫣
+
+<div>
+  <img align="right" height="240" src="https://github.com/tomer00/XeCrypt/assets/68748487/1a919d0f-c405-4651-bd96-7be305f79dd2" alt="LockView"/>
+  <img align="right" width="16px" height="240px" src="https://github.com/hindu744/readme_test/assets/112962567/a8ffee98-73bf-49d9-90bb-6c16f420ce20"/>
+
+- To enhance security, you can access the Quick View feature by entering a PIN.
+- Drop any type of file in the designated area, and it will be automatically encrypted and sorted into the appropriate folder based on its file type.
+- Images can be viewed directly by clicking on a card in a custom-written image viewer, where the image is scaled to fit the available area.
+- To restore files, simply click on the "Decrypt" button. After decryption, file manager will be opened, where you will find your original file successfully restored.
+- To Delete a file, simply click on the "Cross" button.
+
+
+</div>
+   <img height=60px/>
+  <img width="100%" src="https://github.com/tomer00/XeCrypt/assets/68748487/b0612ae2-66c9-43be-95e3-064a806be6ee" alt="EncFiles"/>
+  <img width="100%" src="https://github.com/tomer00/XeCrypt/assets/68748487/99a5cfc8-810d-42d5-9390-997edc2061b1" alt="DecFiles"/>
+
+<img height=60px/>
+
+---
 
 ## Features 📱
 
@@ -35,7 +60,7 @@ XeCrypt is a versatile Java Swing application that empowers you to encrypt and d
 ### Installation
 
 1. Clone this repository or download the latest release from the [Releases](https://github.com/tomer00/XeCrypt/releases) page.
-2. Extract the downloaded zip file and enter `XeCrypt` folder.
+2. Extract the downloaded zip file and enter the `XeCrypt` folder.
 3. Run `XeCrypt.jar` with Java:
 
 ```bash
@@ -44,10 +69,10 @@ java -jar XeCrypt.jar
 
 ## Usage 💻
 
-1. Launch XeCrypt with above command, or you can a shortcut for so.
-2. Enter your pin to unlock or create new pin if opened initially.
+1. Launch XeCrypt with the above command, or you can a shortcut for so.
+2. Enter your pin to unlock or create a new pin if opened initially.
 3. Drag and drop your files to encrypt them.
-4. You can preview images by clicking in them.
+4. You can preview images by clicking on them.
 5. Decryption or deletion can be done using respected buttons.
 
 ## Security 🔐
