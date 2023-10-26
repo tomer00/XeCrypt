@@ -4,6 +4,7 @@ import ui.LockView;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.geom.RoundRectangle2D;
 
@@ -21,10 +22,11 @@ public class LockScreen extends JFrame {
             this.dispose();
 
             var first = new MainScreen();
-            first.setSize(660, 400);
+            first.setSize(800, 620);
             first.setTitle("xCrypt by Tomer...");
             first.setIconImage(new ImageIcon(Repo.ASSETS + "xcryLogo.png").getImage());
             first.setVisible(true);
+            first.setMinimumSize(new Dimension(540, 400));
             first.setLocationRelativeTo(null);
             first.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }));

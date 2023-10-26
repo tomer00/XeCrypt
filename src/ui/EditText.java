@@ -11,16 +11,16 @@ public class EditText {
 
     public final Rect rect;
     private final CharHandler charHandler;
-    private final CharHandler charHandlerVisi;
+    private final CharHandler charHandlerVisible;
     public boolean isVisible = false;
     public boolean error = false;
 
-    private final Color colBg = Color.decode("#ae3d71");
+    private final Color colBg = new Color(238, 58, 58);
 
     public EditText(Rect r, FontMetrics fm) {
         rect = r;
         charHandler = new CharHandler("", fm);
-        charHandlerVisi = new CharHandler("", fm);
+        charHandlerVisible = new CharHandler("", fm);
     }
 
     void draw(Graphics2D g) {
@@ -33,28 +33,28 @@ public class EditText {
         g.setColor(colBg);
         g.fillRoundRect(rect.left, rect.top, rect.width(), rect.height(), 10, 10);
         g.setColor(Color.WHITE);
-        int x = (220 - (isVisible ? charHandlerVisi.width : charHandler.width)) >> 1;
+        int x = (220 - (isVisible ? charHandlerVisible.width : charHandler.width)) >> 1;
         if (isVisible)
-            g.drawString(charHandlerVisi.getText(), x, 180);
+            g.drawString(charHandlerVisible.getText(), x, 180);
         else
             g.drawString(charHandler.getText(), x, 180);
 
-        g.fillRect(x + (isVisible ? charHandlerVisi.width : charHandler.width) + 2, 164, 3, 20);
+        g.fillRect(x + (isVisible ? charHandlerVisible.width : charHandler.width) + 2, 164, 3, 20);
 
     }
 
     public String getPass() {
-        return charHandlerVisi.getText();
+        return charHandlerVisible.getText();
     }
 
     public void append(char c) {
         if (charHandler.length > 10) return;
         charHandler.append('*');
-        charHandlerVisi.append(c);
+        charHandlerVisible.append(c);
     }
 
     public void del() {
         charHandler.delete();
-        charHandlerVisi.delete();
+        charHandlerVisible.delete();
     }
 }

@@ -42,14 +42,6 @@ public class EncDecActi extends JFrame {
         for (File file : files)
             this.files.add(file.getName());
 
-        new Thread(() -> {
-            try {
-                Thread.sleep(40);
-                repaint();
-            } catch (InterruptedException ignored) {
-            }
-        }).start();
-
         this.setLayout(new GridLayout(1, 1));
         gifView = new ImageViewGif(isEnc ? "Encrypting" : "Decrypting");
         this.add(gifView);
@@ -86,9 +78,8 @@ class FilesView extends JComponent {
     private int prevW = 0, prevH = 0;
 
     private boolean isShow = false, isClose = false;
-    private final Color colHovShow = new Color(98, 155, 246);
     private final Color colShow = new Color(7, 159, 102);
-    private final Color colHovClose = new Color(231, 10, 225);
+    private GradientPaint gp;
 
     public FilesView(List<String> files, RvComponent.OnRVClickLis lis) {
         setFont(new Font("Uroob", Font.BOLD, 30));
@@ -172,19 +163,23 @@ class FilesView extends JComponent {
 
             rectOpen.setLocation(x1, prevH - 60);
             rectClose.setLocation(x1 + 120, prevH - 60);
-
+            gp = new GradientPaint(rectText.x - 30, rectText.y - 30, new Color(61, 245, 167),
+                    rectText.x + 250, rectText.y + 10, new Color(9, 111, 224));
         }
 
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
 
+        g.setPaint(gp);
+        g.fillRoundRect(rectText.x - 30, rectText.y - 30, 220, 40, 20, 20);
+
         g.setColor(Color.BLACK);
         g.drawString("Encrypted " + files.size() + " files", rectText.x - 10, rectText.y);
 
         int j = 0;
         for (var f : files)
-            g.drawString(f, rectText.x, rectText.y + (j++ * 40) + 60);
+            g.drawString(f, rectText.x, rectText.y + (j++ * 32) + 80);
 
 
         g.setColor(Color.WHITE);
@@ -192,17 +187,17 @@ class FilesView extends JComponent {
 
         g.setColor(colShow);
         if (isShow)
-            g.setColor(colHovShow);
+            g.setColor(Color.BLACK);
         g.fillRoundRect(rectOpen.x, rectOpen.y, 110, 40, 40, 40);
 
         g.setColor(Color.RED);
         if (isClose)
-            g.setColor(colHovClose);
+            g.setColor(Color.BLACK);
         g.fillRoundRect(rectClose.x, rectClose.y, 110, 40, 40, 40);
 
         g.setColor(Color.WHITE);
-        g.drawString("SHOW", rectOpen.x + 28, rectOpen.y + 28);
-        g.drawString("CLOSE", rectClose.x + 24, rectClose.y + 28);
+        g.drawString("SHOW", rectOpen.x + 28, rectOpen.y + 29);
+        g.drawString("CLOSE", rectClose.x + 24, rectClose.y + 29);
 
     }
 }

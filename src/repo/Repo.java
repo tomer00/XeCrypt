@@ -31,6 +31,7 @@ public class Repo {
         try (var ois = new FileOutputStream(fHash)) {
             ois.write(pass.getBytes(StandardCharsets.UTF_8));
             ois.flush();
+            READIED_HASH = pass;
         } catch (Exception ignored) {
         }
     }
@@ -52,7 +53,7 @@ public class Repo {
     }
 
     public static String getHash() {
-        if (READIED_HASH == null) {
+        if (READIED_HASH == null || READIED_HASH.isEmpty()) {
             File fHash = new File(ASSETS + "hash");
             try (var ins = new BufferedReader(new InputStreamReader(new FileInputStream(fHash)))) {
                 READIED_HASH = ins.readLine();
@@ -60,7 +61,7 @@ public class Repo {
                 READIED_HASH = "";
             }
         }
-        return READIED_HASH;
+        return READIED_HASH == null ? "" : READIED_HASH;
     }
 
 

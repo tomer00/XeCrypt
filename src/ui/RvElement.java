@@ -2,10 +2,7 @@ package ui;
 
 import utils.Rect;
 
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 
 public class RvElement {
     public final ComponentState state;
@@ -16,6 +13,7 @@ public class RvElement {
     private final Color darkBg = Color.decode("#9399a3");
 
     public final Rect decRec, delRect;
+    private final Stroke st = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
     public RvElement(Image img, String text, Rect rect, FontMetrics fm) {
         icon = img;
@@ -47,15 +45,17 @@ public class RvElement {
         g.setColor(Color.red);
         g.fillOval(state.rect.left + 78, state.rect.top + 140, 28, 28);
         g.setColor(Color.WHITE);
+        g.setStroke(st);
         g.drawLine(state.rect.left + 86, state.rect.top + 148, state.rect.left + 98, state.rect.top + 160);
         g.drawLine(state.rect.left + 98, state.rect.top + 148, state.rect.left + 86, state.rect.top + 160);
     }
 
     private int findStr(String str, FontMetrics fm) {
         int i = 0, j = str.length() - 1, mid = 0;
+        char[] chars = str.toCharArray();
         while (i <= j) {
             mid = i + (j - i) / 2;
-            if (fm.stringWidth(str.substring(0, mid)) > 100) j--;
+            if (fm.charsWidth(chars,0,mid) > 100) j--;
             else i++;
         }
         return mid;

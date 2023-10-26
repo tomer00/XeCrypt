@@ -43,7 +43,10 @@ public class RvComponent {
 
     public void draw(Graphics2D g) {
         g.translate(160, scrollOffset);
-        for (var e : elements) e.draw(g);
+        try {
+            for (var e : elements) e.draw(g);
+        } catch (Exception ignored) {
+        }
         g.translate(-160, -scrollOffset);
     }
 

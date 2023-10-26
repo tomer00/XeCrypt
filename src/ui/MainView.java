@@ -15,13 +15,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MainView extends JComponent {
 
     private final Image imgLogo = new ImageIcon(Repo.ASSETS + "xcryLogo.png").getImage();
     private final Image imgDrop = new ImageIcon(Repo.ASSETS + "drop.png").getImage();
+    private final Image imgNoFiles = new ImageIcon(Repo.ASSETS + "noFiles.png").getImage();
     private final RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     private final Rect rectSide = new Rect(0, 0, 0, 0);
@@ -33,6 +33,7 @@ public class MainView extends JComponent {
     private GradientPaint graSide;
 
     private final RvComponent rvComponent;
+    private final Color colMainBg = Color.decode("#fef9d7");
 
     private boolean isDragIn = false;
 
@@ -56,9 +57,7 @@ public class MainView extends JComponent {
         rvComponent = new RvComponent(this, rectMain, (pos, type) -> {
             var f = files.get(pos);
             if (type == 2) {
-                for (File subfile : Objects.requireNonNull(f.listFiles())) subfile.delete();
-                f.delete();
-                updateRv();
+                new DeleteDialog(f, (b) -> updateRv(), repo.getName(f));
             } else if (type == 1) {
                 new Thread(() -> {
                     var l = new ArrayList<File>(1);
@@ -190,8 +189,7 @@ public class MainView extends JComponent {
             sideButtons[1].rect.set(new Rect(10, sY + 60, 140, sY + 100));
             sideButtons[2].rect.set(new Rect(10, sY + 120, 140, sY + 160));
 
-            graSide = new GradientPaint(0, 0, Color.RED, 160, getHeight(), Color.YELLOW);
-
+            graSide = new GradientPaint(0, 0, Color.decode("#f5576c"), 160, getHeight(), Color.decode("#f093fb"));
 
             prevH = getHeight();
             prevW = getWidth();
@@ -212,11 +210,7 @@ public class MainView extends JComponent {
 
         g.setRenderingHints(hints);
 
-
-        g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(rectSide.left, rectSide.top, rectSide.width(), rectSide.height());
-
-        g.setColor(new Color(239, 234, 234));
+        g.setColor(colMainBg);
         g.fillRect(rectMain.left, rectMain.top, rectMain.width(), rectMain.height());
 
 
@@ -253,7 +247,10 @@ public class MainView extends JComponent {
 
         g.setFont(fontMain);
 
-        rvComponent.draw(g);
+        if (files.isEmpty()) {
+            int y = (rectMain.height() - 400) >> 1;
+            g.drawImage(imgNoFiles, ((rectMain.width() - 400) >> 1) + 160, y, null);
+        } else rvComponent.draw(g);
 
         g.setFont(fontSide);
 
