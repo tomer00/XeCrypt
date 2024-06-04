@@ -37,7 +37,7 @@ public class MainView extends JComponent {
 
     private boolean isDragIn = false;
 
-    private final Font fontSide = new Font("Uroob", Font.BOLD, 30);
+    private final Font fontSide = new Font("Uroob", Font.BOLD, 24);
     private final Font fontMain = new Font("System", Font.PLAIN, 16);
 
     private final List<File> files = new ArrayList<>();
@@ -239,9 +239,9 @@ public class MainView extends JComponent {
         }
 
         g.setColor(Color.BLACK);
-        g.drawString("IMAGES", 43, sideButtons[0].rect.bottom - 10);
-        g.drawString("VIDEOS", 44, sideButtons[1].rect.bottom - 10);
-        g.drawString("OTHERS", 40, sideButtons[2].rect.bottom - 10);
+        g.drawString("IMAGES", 33, sideButtons[0].rect.bottom - 10);
+        g.drawString("VIDEOS", 34, sideButtons[1].rect.bottom - 10);
+        g.drawString("OTHERS", 30, sideButtons[2].rect.bottom - 10);
 
         //endregion SIDE PANEL
 

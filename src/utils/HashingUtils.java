@@ -10,7 +10,6 @@ public class HashingUtils {
         String generatedPassword = "";
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-//            md.update(salt.getBytes());
             byte[] bytes = md.digest(passwordToHash.getBytes());
             StringBuilder sb = new StringBuilder();
             for (byte aByte : bytes) {
@@ -18,8 +17,8 @@ public class HashingUtils {
                         .substring(1));
             }
             generatedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+        } catch (NoSuchAlgorithmException ignored) {
+
         }
         return generatedPassword;
     }

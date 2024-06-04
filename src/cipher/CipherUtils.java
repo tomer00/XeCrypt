@@ -51,10 +51,13 @@ public class CipherUtils {
 
     public static void encFile(File inpFile, File outFile) {
         try (var in = new FileInputStream(inpFile)) {
-            SecretKeySpec skeySpec = new SecretKeySpec(Repo.getHash().substring(0, 32).getBytes(StandardCharsets.UTF_8), "AES");
+            SecretKeySpec skeySpec = new SecretKeySpec(Repo.getHash()
+                    .substring(0, 32)
+                    .getBytes(StandardCharsets.UTF_8), "AES");
 
 
-            byte[] ivBytes = Repo.getRandom().substring(0, 16).getBytes(StandardCharsets.UTF_8);
+            byte[] ivBytes = Repo.getRandom().substring(0, 16)
+                    .getBytes(StandardCharsets.UTF_8);
             IvParameterSpec iv = new IvParameterSpec(ivBytes);
 
             var out = (OutputStream) new FileOutputStream(outFile);
@@ -81,7 +84,9 @@ public class CipherUtils {
 
     public static void decFile(File inpFile, File outFile) {
         try (var in = new FileInputStream(inpFile)) {
-            SecretKeySpec skeySpec = new SecretKeySpec(Repo.getHash().substring(0, 32).getBytes(StandardCharsets.UTF_8), "AES");
+            SecretKeySpec skeySpec = new SecretKeySpec(Repo.getHash()
+                    .substring(0, 32)
+                    .getBytes(StandardCharsets.UTF_8), "AES");
 
             byte[] ivBytes = new byte[16];
             in.read(ivBytes);
