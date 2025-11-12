@@ -6,10 +6,10 @@ import java.security.NoSuchAlgorithmException;
 public class HashingUtils {
 
 
-    public static String get_SHA_1_SecurePassword(String passwordToHash) {
+    public static String getSHA256SecurePassword(String passwordToHash) {
         String generatedPassword = "";
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] bytes = md.digest(passwordToHash.getBytes());
             StringBuilder sb = new StringBuilder();
             for (byte aByte : bytes) {

@@ -18,7 +18,7 @@ public class XeCrypt {
 
         LockScreen first = new LockScreen(Repo.getHash().isEmpty());
         first.setSize(220, 400);
-        first.setTitle("xCrypt by Himu...");
+        first.setTitle("xCrypt by Himanshu...");
         first.setIconImage(new ImageIcon(Repo.ASSETS + "xcryLogo.png").getImage());
         first.setVisible(true);
         first.setResizable(false);

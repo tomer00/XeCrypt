@@ -165,12 +165,12 @@ public class LockView extends JComponent {
 
     private void nextScr() {
         if (isFirst) {
-            Repo.saveHash(HashingUtils.get_SHA_1_SecurePassword(et.getPass()));
+            Repo.saveHash(HashingUtils.getSHA256SecurePassword(et.getPass()));
             callNextActivity();
             return;
         }
 
-        if (Repo.getHash().contentEquals(HashingUtils.get_SHA_1_SecurePassword(et.getPass())))
+        if (Repo.getHash().contentEquals(HashingUtils.getSHA256SecurePassword(et.getPass())))
             callNextActivity();
         else et.error = true;
     }
