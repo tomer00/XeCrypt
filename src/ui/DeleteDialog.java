@@ -129,9 +129,9 @@ class DelDia extends JComponent {
         g.setFont(smallFont);
         g.drawString("Confirm Delete", 48, 180);
 
-        AtomicInteger y= new AtomicInteger(220);
+        AtomicInteger y = new AtomicInteger(220);
         lines.forEach((t) -> {
-            g.drawString(t,10, y.get());
+            g.drawString(t, 10, y.get());
             y.addAndGet(20);
         });
 
