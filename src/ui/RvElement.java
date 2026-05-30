@@ -55,7 +55,7 @@ public class RvElement {
         char[] chars = str.toCharArray();
         while (i <= j) {
             mid = i + (j - i) / 2;
-            if (fm.charsWidth(chars,0,mid) > 100) j--;
+            if (fm.charsWidth(chars, 0, mid) > 100) j--;
             else i++;
         }
         return mid;
